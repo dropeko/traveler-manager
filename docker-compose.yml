@@ -1,0 +1,54 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: traveler_manager_app
+    ports:
+      - "8080:80"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8080
+
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: traveler_manager
+      DB_USERNAME: traveler
+      DB_PASSWORD: traveler
+    volumes:
+      - ./:/var/www/html
+      - vendor:/var/www/html/vendor
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: traveler_manager_db
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: traveler_manager
+      MYSQL_USER: traveler
+      MYSQL_PASSWORD: traveler
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: traveler_manager_phpmyadmin
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8081:80"
+
+volumes:
+  dbdata:
+  vendor:
