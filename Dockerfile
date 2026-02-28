@@ -1,3 +1,7 @@
+# syntax=docker/dockerfile:1.7
+
+FROM composer:2 AS composer
+
 FROM php:8.3.30-apache
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -26,11 +30,30 @@ RUN pecl install redis \
     && docker-php-ext-enable redis
 
 RUN a2enmod rewrite headers
+
 COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
+
+COPY composer.json composer.lock ./
+
+COPY artisan ./artisan
+COPY app/ ./app/
+COPY bootstrap/ ./bootstrap/
+COPY config/ ./config/
+COPY database/ ./database/
+COPY routes/ ./routes/
+COPY resources/ ./resources/
+COPY public/ ./public/
+
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
+COPY . .
+
+RUN mkdir -p storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache || true
 
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint
 RUN chmod +x /usr/local/bin/entrypoint

@@ -19,7 +19,6 @@ services:
       DB_PASSWORD: traveler
     volumes:
       - ./:/var/www/html
-      - vendor:/var/www/html/vendor
     depends_on:
       - db
 
