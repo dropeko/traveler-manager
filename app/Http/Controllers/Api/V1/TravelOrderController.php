@@ -56,7 +56,6 @@ class TravelOrderController extends Controller
         $user = $request->user('api');
 
         $filters = $request->validated();
-        $perPage = (int) ($filters['per_page'] ?? 15);
 
         $query = TravelOrder::query();
 
@@ -79,6 +78,8 @@ class TravelOrderController extends Controller
             $query->whereDate('created_at', '<=', $filters['created_to']);
         }
 
+        // Interseção da faixa de viagem:
+        // return_date >= travel_from AND departure_date <= travel_to
         if (! empty($filters['travel_from'])) {
             $query->whereDate('return_date', '>=', $filters['travel_from']);
         }
@@ -86,12 +87,13 @@ class TravelOrderController extends Controller
             $query->whereDate('departure_date', '<=', $filters['travel_to']);
         }
 
-        $paginator = $query
+        $orders = $query
             ->orderByDesc('created_at')
-            ->paginate($perPage)
-            ->withQueryString();
+            ->get();
 
-        return TravelOrderResource::collection($paginator->getCollection());
+        return response()->json([
+            'data' => TravelOrderResource::collection($orders)->resolve(),
+        ]);
     }
 
     public function updateTravelOrderStatus(UpdateTravelOrderStatusRequest $request, string $order_code): JsonResponse
