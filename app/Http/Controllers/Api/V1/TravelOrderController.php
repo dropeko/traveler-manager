@@ -9,6 +9,7 @@ use App\Http\Requests\Api\V1\UpdateTravelOrderStatusRequest;
 use App\Http\Resources\TravelOrderResource;
 use App\Http\Resources\TravelOrderDetailsResource;
 use App\Models\TravelOrder;
+use App\Notifications\TravelOrderStatusChanged;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,8 @@ class TravelOrderController extends Controller
         $user = $request->user('api');
 
         $data = $request->validated();
+
+        $data['requester_name'] = $user->name;
 
         if (! $user->isAdmin()) {
             $data['status'] = TravelOrder::STATUS_REQUESTED;
@@ -105,9 +108,53 @@ class TravelOrderController extends Controller
             ->where('order_code', $order_code)
             ->firstOrFail();
 
-        $order->update([
-            'status' => $request->validated('status'),
+        $newStatus = $request->validated('status');
+        $oldStatus = $order->status;
+
+        if ($oldStatus === TravelOrder::STATUS_APPROVED && $newStatus === TravelOrder::STATUS_CANCELLED) {
+            return response()->json([
+                'message' => 'Não é possível alterar o status para cancelado após o pedido ter sido aprovado.',
+            ], 409);
+        }
+
+        if ($oldStatus !== $newStatus) {
+            $order->update(['status' => $newStatus]);
+
+            if (in_array($newStatus, [TravelOrder::STATUS_APPROVED, TravelOrder::STATUS_CANCELLED], true)) {
+                $order->user->notify(new TravelOrderStatusChanged($order, $oldStatus, $newStatus));
+            }
+        }
+
+        return response()->json([
+            'data' => new TravelOrderResource($order->refresh()),
         ]);
+    }
+
+    public function cancelTravelOrder(Request $request, string $order_code): JsonResponse
+    {
+        $user = $request->user('api');
+
+        $query = $user->isAdmin()
+            ? TravelOrder::query()
+            : $user->travelOrders();
+
+        $order = $query->where('order_code', $order_code)->firstOrFail();
+
+        if ($order->status === TravelOrder::STATUS_APPROVED) {
+            return response()->json([
+                'message' => 'Não é possível cancelar um pedido já aprovado.',
+            ], 409);
+        }
+
+        if ($order->status !== TravelOrder::STATUS_CANCELLED) {
+            $oldStatus = $order->status;
+
+            $order->update([
+                'status' => TravelOrder::STATUS_CANCELLED,
+            ]);
+
+            $order->user->notify(new TravelOrderStatusChanged($order, $oldStatus, TravelOrder::STATUS_CANCELLED));
+        }
 
         return response()->json([
             'data' => new TravelOrderResource($order->refresh()),

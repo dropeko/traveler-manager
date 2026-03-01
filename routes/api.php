@@ -23,4 +23,5 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:api')->get('/travel-orders', [TravelOrderController::class, 'listTravelOrders']);
     Route::middleware('auth:api')->get('/travel-orders/{order_code}', [TravelOrderController::class, 'showByOrderCode']);
     Route::middleware('auth:api')->patch('/travel-orders/{order_code}/status', [TravelOrderController::class, 'updateTravelOrderStatus']);
+    Route::middleware('auth:api')->patch('/travel-orders/{order_code}/cancel', [TravelOrderController::class, 'cancelTravelOrder']);
 });
