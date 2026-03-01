@@ -121,7 +121,11 @@ class TravelOrderController extends Controller
             $order->update(['status' => $newStatus]);
 
             if (in_array($newStatus, [TravelOrder::STATUS_APPROVED, TravelOrder::STATUS_CANCELLED], true)) {
-                $order->user->notify(new TravelOrderStatusChanged($order, $oldStatus, $newStatus));
+                $order->user->notify(new TravelOrderStatusChanged(
+                    $order, 
+                    $oldStatus, 
+                    $newStatus
+                    ));
             }
         }
 
@@ -153,7 +157,11 @@ class TravelOrderController extends Controller
                 'status' => TravelOrder::STATUS_CANCELLED,
             ]);
 
-            $order->user->notify(new TravelOrderStatusChanged($order, $oldStatus, TravelOrder::STATUS_CANCELLED));
+            $order->user->notify(new TravelOrderStatusChanged(
+                $order,
+                $oldStatus,
+                TravelOrder::STATUS_CANCELLED
+            ));
         }
 
         return response()->json([
