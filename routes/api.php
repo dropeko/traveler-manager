@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\TravelOrderController;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +15,9 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware('auth:api')->get('/me', function (Request $request) {
         return response()->json([
-            'user' => $request->user('api'),
+            'user' => new UserResource($request->user('api')),
         ]);
     });
+
+    Route::middleware('auth:api')->post('/travel-orders', [TravelOrderController::class, 'store']);
 });
