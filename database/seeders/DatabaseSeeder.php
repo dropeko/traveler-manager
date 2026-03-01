@@ -10,14 +10,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Admin
         User::factory()->admin()->create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => '123',
         ]);
 
-        // 3 usuários comuns (fixos para facilitar testes/login)
         $users = [
             User::factory()->create([
                 'name' => 'Test User 1',
@@ -40,7 +38,6 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($users as $i => $user) {
-            // 1) Sempre uma requested
             TravelOrder::factory()
                 ->for($user)
                 ->create([
@@ -48,7 +45,6 @@ class DatabaseSeeder extends Seeder
                     'status' => TravelOrder::STATUS_REQUESTED,
                 ]);
 
-            // 2) A segunda deve ser approved OU cancelled
             $second = ($i % 2 === 0)
                 ? TravelOrder::factory()->approved()
                 : TravelOrder::factory()->cancelled();
