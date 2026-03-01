@@ -30,7 +30,7 @@ class AuthController extends Controller
         $credentials = $request->validated();
 
         if (! $token = auth('api')->attempt($credentials)) {
-            return response()->json(['message' => 'Invalid credentials.'], 401);
+            return response()->json(['message' => 'Credenciais incorretas'], 401);
         }
 
         /** @var \App\Models\User $user */
@@ -44,7 +44,6 @@ class AuthController extends Controller
         $ttlMinutes = (int) config('jwt.ttl', 60);
 
         return response()->json([
-            'token_type' => 'Bearer',
             'access_token' => $token,
             'expires_in' => $ttlMinutes * 60,
             'user' => new UserResource($user),

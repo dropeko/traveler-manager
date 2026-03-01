@@ -19,5 +19,6 @@ Route::prefix('v1')->group(function () {
         ]);
     });
 
-    Route::middleware('auth:api')->post('/travel-orders', [TravelOrderController::class, 'store']);
+    Route::middleware('auth:api')->post('/travel-orders', [TravelOrderController::class, 'createTravelOrder']);
+    Route::middleware('auth:api')->get('/travel-orders/{order_code}', [TravelOrderController::class, 'showByOrderCode']);
 });

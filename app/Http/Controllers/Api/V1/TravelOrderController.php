@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\TravelOrderRequest;
 use App\Http\Resources\TravelOrderResource;
+use App\Http\Resources\TravelOrderDetailsResource;
 use App\Models\TravelOrder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class TravelOrderController extends Controller
 {
-    public function store(TravelOrderRequest $request): JsonResponse
+    public function createTravelOrder(TravelOrderRequest $request): JsonResponse
     {
         $user = $request->user('api');
 
@@ -22,5 +24,18 @@ class TravelOrderController extends Controller
         return response()->json([
             'data' => new TravelOrderResource($order->refresh()),
         ], 201);
+    }
+
+    public function showByOrderCode(Request $request, string $order_code): JsonResponse
+    {
+        $user = $request->user('api');
+
+        $order = $user->travelOrders()
+            ->where('order_code', $order_code)
+            ->firstOrFail();
+
+        return response()->json([
+            'data' => new TravelOrderDetailsResource($order),
+        ]);
     }
 }
