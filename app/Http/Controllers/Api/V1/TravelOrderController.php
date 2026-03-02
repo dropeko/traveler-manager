@@ -51,10 +51,9 @@ class TravelOrderController extends Controller
         ]);
     }
 
-    public function listTravelOrders(TravelOrderIndexRequest $request)
+    public function listTravelOrders(TravelOrderIndexRequest $request): JsonResponse
     {
         $user = $request->user('api');
-
         $filters = $request->validated();
 
         $query = TravelOrder::query();
@@ -74,22 +73,20 @@ class TravelOrderController extends Controller
         if (! empty($filters['created_from'])) {
             $query->whereDate('created_at', '>=', $filters['created_from']);
         }
+
         if (! empty($filters['created_to'])) {
             $query->whereDate('created_at', '<=', $filters['created_to']);
         }
 
-        // Interseção da faixa de viagem:
-        // return_date >= travel_from AND departure_date <= travel_to
         if (! empty($filters['travel_from'])) {
             $query->whereDate('return_date', '>=', $filters['travel_from']);
         }
+
         if (! empty($filters['travel_to'])) {
             $query->whereDate('departure_date', '<=', $filters['travel_to']);
         }
 
-        $orders = $query
-            ->orderByDesc('created_at')
-            ->get();
+        $orders = $query->orderByDesc('created_at')->get();
 
         return response()->json([
             'data' => TravelOrderResource::collection($orders)->resolve(),
@@ -124,10 +121,10 @@ class TravelOrderController extends Controller
 
             if (in_array($newStatus, [TravelOrder::STATUS_APPROVED, TravelOrder::STATUS_CANCELLED], true)) {
                 $order->user->notify(new TravelOrderStatusChanged(
-                    $order, 
-                    $oldStatus, 
+                    $order,
+                    $oldStatus,
                     $newStatus
-                    ));
+                ));
             }
         }
 
