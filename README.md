@@ -158,3 +158,7 @@ docker compose exec app php artisan test
 ## Observações
 - O ID público usado pela API é o `order_code` (não o `id` numérico).
 - Notificações de mudança de status são persistidas em `notifications` (canal `database`).
+
+---
+
+Cuidadosamente desenvolvido por PHCA.dev 💙✈️
