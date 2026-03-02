@@ -1,10 +1,10 @@
-# Traveler Manager (Microserviço Laravel) — API de Pedidos de Viagem
+# Traveler Manager — API de Pedidos de Viagem
 
-Microsserviço em **Laravel** para gerenciar pedidos de viagem corporativa (Travel Orders), com **API REST**, **autenticação JWT**, **MySQL via Docker**, regras de negócio e **testes automatizados**.
+Microsserviço em **Laravel** para gerenciar pedidos de viagem corporativa, com **API REST**, **autenticação JWT**, **MySQL via Docker** e **testes automatizados**.
 
 ---
 
-## Decisões e caminhos adotados (resumo)
+## Decisões e caminhos adotados
 
 - **Arquitetura**: API versionada em `/api/v1/*` com Controllers, Form Requests (validação), Resources (formatação), Eloquent Models e Notifications.
 - **Autenticação**: JWT (guard `api`) para proteger endpoints.
@@ -21,7 +21,7 @@ Microsserviço em **Laravel** para gerenciar pedidos de viagem corporativa (Trav
 ## Requisitos
 
 - Docker + Docker Compose
-- Porta **8080** livre (API) e **8081** livre (phpMyAdmin)
+- Porta **8080** API e **8081** phpMyAdmin
 
 ---
 
@@ -45,7 +45,7 @@ docker compose exec app composer install
 ```
 
 ### 4) Configurar ambiente
-O projeto já inclui `.env` e `.env.example` alinhados para MySQL via Docker:
+O projeto já inclui `.env.example`:
 
 - `DB_CONNECTION=mysql`
 - `DB_HOST=db`
