@@ -28,7 +28,7 @@ class TravelOrderStatusChanged extends Notification
             'old_status' => $this->oldStatus,
             'new_status' => $this->newStatus,
             'message' => "Seu pedido {$this->order->order_code} foi atualizado para {$this->newStatus}.",
-            'user_id' => $this->order->user->id,
+            'user_id' => $this->order->user_id,
         ];
     }
 }
