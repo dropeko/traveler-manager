@@ -19,8 +19,33 @@ services:
       DB_PASSWORD: traveler
     volumes:
       - ./:/var/www/html
+      - vendor:/var/www/html/vendor
     depends_on:
       - db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    container_name: traveler_manager_frontend
+    working_dir: /var/www/html
+    ports:
+      - "5173:5173"
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./:/var/www/html
+      - vendor:/var/www/html/vendor
+      - node_modules:/var/www/html/node_modules
+    command: >
+        sh -c "
+        echo 'Waiting for vendor/autoload.php...' &&
+        while [ ! -f vendor/autoload.php ]; do sleep 1; done &&
+        npm ci || npm install &&
+        npm run dev -- --host 0.0.0.0 --port 5173
+        "
+    depends_on:
+      - app
 
   db:
     image: mysql:8.0
@@ -51,3 +76,4 @@ services:
 volumes:
   dbdata:
   vendor:
+  node_modules:

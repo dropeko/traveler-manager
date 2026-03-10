@@ -24,4 +24,18 @@ export default defineConfig({
             formVariants: true,
         }),
     ],
+    server: {
+        host: true,
+        port: 5173,
+        strictPort: true,
+        hmr: {
+            host: 'localhost',
+            port: 5173,
+            protocol: 'ws',
+        },
+        watch: {
+            usePolling: true,
+            interval: 250,
+        },
+    },
 });

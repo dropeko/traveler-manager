@@ -10,8 +10,8 @@ mkdir -p storage bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
 chmod -R ug+rwX storage bootstrap/cache 2>/dev/null || true
 
-# Install PHP deps if missing
-if [ ! -f vendor/autoload.php ]; then
+# Install PHP deps if missing or incomplete
+if [ ! -f vendor/autoload.php ] || [ ! -d vendor/tymon/jwt-auth ]; then
   echo "Installing composer dependencies..."
   composer install --no-interaction --prefer-dist
 fi
