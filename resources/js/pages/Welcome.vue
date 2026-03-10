@@ -1,6 +1,5 @@
-<!-- filepath: c:\Users\dropeko\Desktop\dev\traveler-manager\resources\js\pages\Welcome.vue -->
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 
 type Feature = {
     title: string;
@@ -29,7 +28,6 @@ function iconPath(name: Feature['icon']) {
     </Head>
 
     <div class="min-h-screen bg-[#050A16] text-slate-100">
-        <!-- Background accents -->
         <div aria-hidden="true" class="pointer-events-none fixed inset-0 overflow-hidden">
             <div
                 class="absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full blur-3xl"
@@ -43,7 +41,6 @@ function iconPath(name: Feature['icon']) {
         </div>
 
         <div class="relative mx-auto flex max-w-6xl flex-col gap-10 px-6 py-10 lg:py-16">
-            <!-- Top bar -->
             <header class="flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <div
@@ -74,7 +71,6 @@ function iconPath(name: Feature['icon']) {
                 </nav>
             </header>
 
-            <!-- Hero -->
             <section class="flex flex-1 items-center justify-center py-10">
                 <div class="w-full max-w-2xl text-center">
                     <h1 class="mt-5 text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl lg:text-5xl">
@@ -87,25 +83,13 @@ function iconPath(name: Feature['icon']) {
                     </p>
 
                     <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row sm:items-center">
-                        <a
-                            href="http://localhost:8080/"
+                        <Link
+                            href="/login"
                             class="inline-flex items-center justify-center rounded-xl bg-sky-500 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-300/70"
                         >
-                            Abrir aplicação
-                        </a>
-
-                        <a
-                            href="http://localhost:8080/api/v1"
-                            class="inline-flex items-center justify-center rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-slate-700 hover:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-sky-400/60"
-                        >
-                            Ver API base
-                        </a>
+                            Entrar
+                        </Link>
                     </div>
-
-                    <p class="mt-4 text-xs text-slate-400">
-                        Dica: a UI roda em <span class="text-slate-200">:8080</span> e o Vite/HMR em
-                        <span class="text-slate-200">:5173</span>.
-                    </p>
                 </div>
             </section>
             <footer class="border-t border-slate-900/70 pt-6">
