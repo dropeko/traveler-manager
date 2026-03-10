@@ -10,10 +10,15 @@ class UserResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+
+        $role = $this->getAttribute('role');
+        
         return [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'role' => $role,
+            'is_admin' => $this->getAttribute('is_admin') === true || (is_string($role) && strtolower($role) === 'admin'),
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
         ];

@@ -2,6 +2,8 @@ export type AuthUser = {
     id: number;
     name: string;
     email: string;
+    role?: string;
+    is_admin?: boolean;
 };
 
 const TOKEN_KEY = 'tm.access_token';
